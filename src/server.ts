@@ -8,28 +8,27 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import cors from "@fastify/cors";
 
-const service = Fastify({
-    logger: {
-        name: "fastify-boilerplate",
-        level: "trace",
-    },
-    genReqId: () => new ShortUniqueId({ length: 10 }).randomUUID(),
-});
-
-service.register(cors, {
-    origin: "*",
-});
-
-service.register(fastifyFormbody);
-service.register(swagger, swaggerConfig);
-service.register(swaggerUi, { routePrefix: "/docs" });
-
-// Endpoint routers
-service.register(pdf);
-
 const start = async () => {
+    const service = Fastify({
+        logger: {
+            name: "fastify-boilerplate",
+            level: "trace",
+        },
+        genReqId: () => new ShortUniqueId({ length: 10 }).randomUUID(),
+    });
+
+    await service.register(cors, {
+        origin: "*",
+    });
+
+    service.register(fastifyFormbody);
+    service.register(swagger, swaggerConfig);
+    service.register(swaggerUi, { routePrefix: "/docs" });
+
+    service.register(pdf);
+
     try {
-        const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 9666;
+        const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
         const host = process.env.HOST || "localhost";
         service.listen({ port: port, host: host }, (err) => {
             if (err) {
