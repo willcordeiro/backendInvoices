@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
+        "start-build": "npx prisma migrate dev && node build/server.js",
         "start": "node build/server.js",
         "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts -r tsconfig-paths/register | pino-prettier",
         "test": "NODE_ENV=test jest --runInBand",

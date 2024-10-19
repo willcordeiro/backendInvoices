@@ -1,8 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 import pdfParse from "pdf-parse";
-const pdfDirectory = path.join(__dirname, "./pdf");
 import { ClientDTO } from "../services/dto";
+
+const pdfDirectory = "./static/pdf";
 
 export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
     const clientNumberMatch = pdfText.match(/DA INSTALAÇÃO\s*(\d+)\s*(\d*)/i);
