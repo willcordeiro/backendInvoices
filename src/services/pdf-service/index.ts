@@ -1,3 +1,3 @@
-import { getAllPdf } from "./extract-pdf-data.service";
+import { getAllPdf, getAllInfo } from "./extract-pdf-data.service";
 
-export { getAllPdf };
+export { getAllPdf, getAllInfo };

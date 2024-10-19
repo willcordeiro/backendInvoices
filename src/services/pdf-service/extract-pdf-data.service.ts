@@ -37,3 +37,11 @@ export const getAllPdf = async (clientData: ClientDTO) => {
 
     return pdfs;
 };
+export const getAllInfo = async () => {
+    const data = await prisma.pdfClientData.findMany({
+        include: {
+            valoresFaturados: true,
+        },
+    });
+    return data;
+};
