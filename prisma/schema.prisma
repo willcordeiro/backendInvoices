@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -14,34 +8,78 @@ datasource db {
 }
 
 model PdfClientData {
-    id                 Int                @id @default(autoincrement())
-    fileName           String
-    clientNumber       String?
-    installationNumber String?
-    vencimento         String?
-    data               String
-    valorAPagar        String?
-    notaFiscal         String?
-    serie              String?
-    dataEmissao        String?
-    codigoDeBarras     String?
-    valoresFaturados   ValoresFaturados[]
-    icmsTotal          String?
-    pasepTotal         String?
-    cofinsTotal        String?
-    nomeCliente        String?
-    distribuidora      String?
+    id                      Int                      @id @default(autoincrement())
+    fileName                String
+    clientNumber            String?
+    installationNumber      String?
+    vencimento              String?
+    data                    String
+    valorAPagar             String?
+    notaFiscal              String?
+    serie                   String?
+    dataEmissao             String?
+    codigoDeBarras          String?
+    valoresFaturados        ValoresFaturados[]
+    icmsTotal               String?
+    pasepTotal              String?
+    cofinsTotal             String?
+    nomeCliente             String?
+    distribuidora           String?
+    energiaCompensada       EnergiaCompensada?
+    contribuicaoIlumPublica ContribuicaoIlumPublica?
+    total                   Total?
+    bandeiraVermelha        BandeiraVermelha?
 }
 
 model ValoresFaturados {
     id              Int           @id @default(autoincrement())
     tipo            String
-    quantidade      String // Aqui pode estar como String
-    precoUnit       String // E aqui também
+    quantidade      String
+    precoUnit       String
     valorTotal      String
     pisCofins       String?
     icms            String?
     tarifaUnit      String?
     pdfClientData   PdfClientData @relation(fields: [pdfClientDataId], references: [id])
     pdfClientDataId Int
+}
+
+model EnergiaCompensada {
+    id              Int           @id @default(autoincrement())
+    unidade         String
+    quantidade      String
+    precoUnit       String
+    valorTotal      String
+    pisCofins       String?
+    icms            String?
+    tarifaUnit      String?
+    pdfClientData   PdfClientData @relation(fields: [pdfClientDataId], references: [id])
+    pdfClientDataId Int           @unique
+}
+
+model ContribuicaoIlumPublica {
+    id              Int           @id @default(autoincrement())
+    unidade         String
+    quantidade      String
+    valorTotal      String
+    pdfClientData   PdfClientData @relation(fields: [pdfClientDataId], references: [id])
+    pdfClientDataId Int           @unique
+}
+
+model Total {
+    id              Int           @id @default(autoincrement())
+    unidade         String
+    quantidade      String
+    valorTotal      String
+    pdfClientData   PdfClientData @relation(fields: [pdfClientDataId], references: [id])
+    pdfClientDataId Int           @unique
+}
+
+model BandeiraVermelha {
+    id              Int           @id @default(autoincrement())
+    unidade         String
+    quantidade      String
+    valorTotal      String
+    pdfClientData   PdfClientData @relation(fields: [pdfClientDataId], references: [id])
+    pdfClientDataId Int           @unique
 }

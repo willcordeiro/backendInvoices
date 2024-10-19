@@ -21,14 +21,26 @@ export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
             /(Energia .+?)(kWh|Unid)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/g
         ),
     ];
+
+    // Extração dos valores específicos
+    const valoresEspecificosMatches = [
+        ...(pdfText.match(
+            /Energia compensada GD IkWh\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/
+        ) || []),
+        ...(pdfText.match(/Contrib Ilum Publica Municipal\s+([\d.,]+)/) || []),
+        ...(pdfText.match(/TOTAL\s+([\d.,]+)/) || []),
+        ...(pdfText.match(/Bandeira Vermelha - Já Incluído no valor a pagar\s+([\d.,]+)/) || []),
+    ];
+
+    // Extraindo ICMS, PASEP e COFINS
     const icmsMatch = pdfText.match(/ICMS\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);
     const pasepMatch = pdfText.match(/PASEP\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);
     const cofinsMatch = pdfText.match(/COFINS\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);
 
     const valoresFaturados = tabelaFaturadosMatches.map((match) => ({
         tipo: match[1].trim(),
-        quantidade: parseFloat(match[3].trim()), // Convertendo para número
-        precoUnit: parseFloat(match[4].trim()), // Convertendo para número
+        quantidade: parseFloat(match[3].trim()),
+        precoUnit: parseFloat(match[4].trim()),
         valorTotal: match[5].trim(),
         pisCofins: match[6].trim(),
         icms: match[7].trim(),
@@ -53,9 +65,51 @@ export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
         cofinsTotal: cofinsMatch?.[1]?.trim() || "",
         nomeCliente: pdfText.match(/([A-Z\s]+)\s+(\d{8})/)?.[1].trim() || "",
         distribuidora: pdfText.includes("CEMIG") ? "CEMIG" : "CEMIG",
+        energiaCompensada: valoresEspecificosMatches[0]
+            ? {
+                  unidade: "kWh",
+                  quantidade: valoresEspecificosMatches[1],
+                  precoUnit: valoresEspecificosMatches[2].replace(/[^0-9.,]+/g, ""),
+                  valorTotal: valoresEspecificosMatches[3],
+                  pisCofins: valoresEspecificosMatches[4],
+                  icms: valoresEspecificosMatches[5],
+                  tarifaUnit: valoresEspecificosMatches[6],
+              }
+            : null,
+        contribuicaoIlumPublica: valoresEspecificosMatches[0]
+            ? {
+                  unidade: "R$",
+                  quantidade: valoresEspecificosMatches[0]
+                      .replace(/[^0-9.,]+/g, "")
+                      .replace(",", "."),
+
+                  valorTotal: valoresEspecificosMatches[0]
+                      .replace(/[^0-9.,]+/g, "")
+                      .replace(",", "."),
+              }
+            : null,
+        total: valoresEspecificosMatches[2]
+            ? {
+                  unidade: "R$",
+                  quantidade: valoresEspecificosMatches[2]
+                      .replace(/[^0-9.,]+/g, "")
+                      .replace(",", "."),
+
+                  valorTotal: valoresEspecificosMatches[2]
+                      .replace(/[^0-9.,]+/g, "")
+                      .replace(",", "."),
+              }
+            : null,
+        bandeiraVermelha: valoresEspecificosMatches[3]
+            ? {
+                  unidade: "R$",
+                  quantidade: valoresEspecificosMatches[3].replace(",", "."),
+
+                  valorTotal: valoresEspecificosMatches[3].replace(",", "."),
+              }
+            : null,
     };
 }
-
 export interface PdfClientData {
     fileName: string;
     clientNumber: string | null;
@@ -69,8 +123,8 @@ export interface PdfClientData {
     codigoDeBarras: string | null;
     valoresFaturados: Array<{
         tipo: string;
-        quantidade: string;
-        precoUnit: string;
+        quantidade: number;
+        precoUnit: number;
         valorTotal: string;
         pisCofins: string;
         icms: string;
@@ -81,11 +135,21 @@ export interface PdfClientData {
     cofinsTotal: string | null;
     nomeCliente: string | null;
     distribuidora: string | null;
+    energiaCompensada: {
+        unidade: string;
+        quantidade: string;
+        precoUnit: string;
+        valorTotal: string;
+        pisCofins: string;
+        icms: string;
+        tarifaUnit: string;
+    } | null;
 }
 
 export async function getClientDataFromPdfs(): Promise<ClientDTO[]> {
     try {
         const pdfFiles = await fs.readdir(pdfDirectory);
+
         const clientDTOList: ClientDTO[] = [];
 
         for (const file of pdfFiles) {
@@ -94,6 +158,7 @@ export async function getClientDataFromPdfs(): Promise<ClientDTO[]> {
             const data = await pdfParse(fileBuffer);
 
             const clientData = extractPdfData(data.text, file);
+
             clientDTOList.push(clientData);
         }
 

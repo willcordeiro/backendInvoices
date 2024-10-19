@@ -6,7 +6,6 @@ export default async function (server: FastifyInstance) {
     server.get("/get-pdfs", async (request, reply) => {
         try {
             const clientDTOList = await getClientDataFromPdfs();
-
             const results = await Promise.all(
                 clientDTOList.map((clientDTO) => getAllPdf(clientDTO))
             );
