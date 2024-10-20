@@ -6,6 +6,11 @@ import { ClientDTO } from "../services/dto";
 export const pdfDirectory = "./static/pdf";
 
 export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
+    const nomeCliente =
+        pdfText.match(/DÉBITO AUTOMÁTICO\s*([A-Z\s]+)\s+AV\b/)?.[1].trim() ||
+        pdfText.match(/([A-Z\s]+)\s+(\d{8})/)?.[1].trim() ||
+        "";
+
     const clientNumberMatch = pdfText.match(/DA INSTALAÇÃO\s*(\d+)\s*(\d*)/i);
     const dataMatches = pdfText.match(/([A-Z]{3}\/\d{4})/g);
     const vencimentoMatch = pdfText.match(/(\d{2}\/\d{2}\/\d{4})/i);
@@ -63,7 +68,7 @@ export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
         icmsTotal: icmsMatch?.[1]?.trim() || "",
         pasepTotal: pasepMatch?.[1]?.trim() || "",
         cofinsTotal: cofinsMatch?.[1]?.trim() || "",
-        nomeCliente: pdfText.match(/([A-Z\s]+)\s+(\d{8})/)?.[1].trim() || "",
+        nomeCliente: nomeCliente,
         distribuidora: pdfText.includes("CEMIG") ? "CEMIG" : "CEMIG",
         energiaCompensada: valoresEspecificosMatches[0]
             ? {

@@ -1,24 +1,10 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { getAllInfo, getAllPdf } from "../../services/pdf-service";
-import { getClientDataFromPdfs } from "../../utils/extract-pdf.utils";
+import { getAllInfo } from "../../services/pdf-service";
 import fs from "fs";
 import path from "node:path";
 import { workspacePath } from "../../config/constants";
 
 export default async function (server: FastifyInstance) {
-    server.get("/get-pdfs", async (request, reply) => {
-        try {
-            const clientDTOList = await getClientDataFromPdfs();
-            const results = await Promise.all(
-                clientDTOList.map((clientDTO) => getAllPdf(clientDTO))
-            );
-
-            reply.send(results);
-        } catch (error) {
-            reply.status(500).send({ message: "Error processing PDFs", error: error });
-        }
-    });
-
     server.get("/allPdf", async (request, reply) => {
         try {
             const pdfs = await getAllInfo();
