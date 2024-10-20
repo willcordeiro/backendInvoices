@@ -24,7 +24,6 @@ const start = async () => {
     service.register(fastifyFormbody);
     service.register(swagger, swaggerConfig);
     service.register(swaggerUi, { routePrefix: "/docs" });
-
     service.register(pdf);
 
     try {
