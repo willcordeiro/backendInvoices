@@ -5,6 +5,10 @@ import path from "node:path";
 import { workspacePath } from "../../config/constants";
 
 export default async function (server: FastifyInstance) {
+    server.get("/healthcheck", async (request: FastifyRequest, reply: FastifyReply) => {
+        return reply.send({ status: "ok", message: "Server is healthy" });
+    });
+
     server.get("/allPdf", async (request, reply) => {
         try {
             const pdfs = await getAllInfo();

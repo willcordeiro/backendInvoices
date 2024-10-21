@@ -1,0 +1,13 @@
+{
+    "build": {
+        "command": "npm run build"
+    },
+    "start": {
+        "command": "npm run start"
+    },
+    "healthcheck": {
+        "path": "/healthcheck",
+        "interval": 10,
+        "timeout": 5
+    }
+}
