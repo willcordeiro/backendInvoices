@@ -7,7 +7,7 @@ import { swaggerConfig } from "./swagger";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import cors from "@fastify/cors";
-import { getAllPdf } from "./services/pdf-service";
+import { registerPdfData } from "./services/pdf-service";
 import { getClientDataFromPdfs } from "./utils/extract-pdf.utils";
 
 const start = async () => {
@@ -30,7 +30,7 @@ const start = async () => {
 
     const clientDTOList = await getClientDataFromPdfs();
 
-    await Promise.all(clientDTOList.map((clientDTO) => getAllPdf(clientDTO)));
+    await Promise.all(clientDTOList.map((clientDTO) => registerPdfData(clientDTO)));
 
     try {
         const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;

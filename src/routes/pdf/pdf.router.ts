@@ -10,6 +10,7 @@ export default async function (server: FastifyInstance) {
             const pdfs = await getAllInfo();
             reply.send(pdfs);
         } catch (error) {
+            console.error("Error processing PDFs:", error);
             reply.status(500).send({ message: "Error processing PDFs", error: error });
         }
     });

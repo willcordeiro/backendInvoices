@@ -27,7 +27,6 @@ export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
         ),
     ];
 
-    // Extração dos valores específicos
     const valoresEspecificosMatches = [
         ...(pdfText.match(
             /Energia compensada GD IkWh\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/
@@ -37,7 +36,6 @@ export function extractPdfData(pdfText: string, fileName: string): ClientDTO {
         ...(pdfText.match(/Bandeira Vermelha - Já Incluído no valor a pagar\s+([\d.,]+)/) || []),
     ];
 
-    // Extraindo ICMS, PASEP e COFINS
     const icmsMatch = pdfText.match(/ICMS\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);
     const pasepMatch = pdfText.match(/PASEP\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);
     const cofinsMatch = pdfText.match(/COFINS\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/);

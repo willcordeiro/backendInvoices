@@ -1,22 +1,28 @@
-import Fastify from "fastify";
-import companiesRouter from "../routes/pdf";
+import { PrismaClient } from "@prisma/client";
+import { mockDeep, mockReset, DeepMockProxy } from "jest-mock-extended";
+import { mockPdfs, mockClientDataValues } from "./e2e/mock.pdf";
 
-beforeAll(async () => {
-    // TODO: drop, create and migrate test DB
+jest.mock("@prisma/client", () => {
+    return {
+        PrismaClient: jest.fn().mockImplementation(() => ({
+            pdfClientData: {
+                findMany: jest.fn().mockResolvedValue(mockPdfs),
+                findFirst: jest
+                    .fn()
+                    .mockImplementationOnce(() => Promise.resolve(undefined))
+                    .mockImplementationOnce(() => Promise.resolve(mockClientDataValues)),
+                create: jest
+                    .fn()
+                    .mockImplementationOnce(() => Promise.resolve(mockClientDataValues)),
+            },
+        })),
+    };
 });
 
-afterAll(async () => {
-    // TODO: Close client DB connection
+export const prismaMock = mockDeep<PrismaClient>() as unknown as DeepMockProxy<PrismaClient>;
+
+beforeEach(() => {
+    mockReset(prismaMock);
 });
 
-beforeEach(async () => {
-    // TODO: Remove all data from all collections
-    // TODO: Seed test DB
-});
-
-export const buildFastify = () => {
-    const server = Fastify();
-    server.register(companiesRouter);
-
-    return server;
-};
+export const getPrismaMock = () => prismaMock;

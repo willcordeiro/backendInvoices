@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { ClientDTO } from "../dto";
 
-export const getAllPdf = async (clientData: ClientDTO) => {
+export const registerPdfData = async (clientData: ClientDTO) => {
     const existingPdf = await prisma.pdfClientData.findFirst({
         where: {
             clientNumber: clientData.clientNumber,
