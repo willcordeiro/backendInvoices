@@ -1,110 +1,54 @@
-# 🚀 Fastify Boilerplate
+# Passos para rodar a aplicação React com Vite e .env
 
-Welcome to the Fastify Boilerplate! This project provides a robust foundation for building scalable and high-performance web applications using Fastify and TypeScript. It comes pre-configured with essential tools for development, testing, and deployment.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue.svg)](https://www.typescriptlang.org/)
-[![Fastify](https://img.shields.io/badge/Fastify-4.17.0-green.svg)](https://www.fastify.io/)
-[![Jest](https://img.shields.io/badge/Jest-29.5.0-red.svg)](https://jestjs.io/)
+# 1. Clone o repositório
+```
+git clone https://github.com/willcordeiro/backendInvoices.git
+```
+# 2. Navegue até o diretório do projeto
+cd seu-repositorio
 
-## 🌟 Features
+# 3. Instale as dependências
+```
+npm install
+```
+# ou
+```
+yarn install
+```
 
--   **Fastify**: High-performance web framework
--   **TypeScript**: For type-safe code and enhanced developer experience
--   **Jest & Supertest**: Comprehensive testing setup
--   **ESLint & Prettier**: Code linting and formatting
--   **Docker**: Containerization for easy deployment
--   **Hot Reloading**: Fast development with automatic reloading
--   **Environment Variables**: Secure configuration management
--   **Production-Ready**: Optimized build process for deployment
+# 4. Crie o arquivo .env com a variável DATABASE_URL e PORT
+exemplo:
+```
+DATABASE_URL=postgresql://postgres:123@localhost:5432/postgres
+```
+```
+PORT=5000
+```
 
-## 🛠️ Getting Started
+# Execute as migrations do Prisma
+```
+npx prisma migrate dev --name init
+````
 
-### Prerequisites
 
--   Node.js (v18 or later)
--   npm (v6 or later)
--   Docker (optional, for containerization)
-
-### Installation
-
-1. Clone the repository:
-
-    git clone https://github.com/your-username/fastify-boilerplate.git
-    cd fastify-boilerplate
-
-2. Install dependencies:
-
-    npm install
-
-3. Set up environment variables:
-   Create a `.env` file in the root directory and add your environment variables:
-
-    PORT=9666
-    HOST=0.0.0.0
-
-## 🚀 Usage
-
-### Development
-
-Start the development server with hot reloading:
-
+# 5. Inicie a aplicação localmente
+```
 npm run dev
+```
+# ou
+```
+yarn dev
+```
 
-### Production
+# 6. Utilize a aplicação a partir do Docker
+baixe o docker e execute o comando abaixo
+```
+docker-compose up --build
+```
 
-Build and run the application:
+# 7. acessa a aplicação via deploy em 
+```
+https://front-invoices-one.vercel.app/
+```
 
-npm run build
-npm start
-
-### Docker
-
-Build and run the Docker container:
-
-docker build -t my-fastify-app .
-docker run -p 9666:9666 my-fastify-app
-
-## 🧪 Testing
-
-This boilerplate uses Jest and Supertest for comprehensive testing.
-
-Run all tests:
-
-npm test
-
-Generate a coverage report:
-
-npm run test:coverage
-
-Run tests on staged files:
-
-npm run test:staged
-
-## 🧹 Linting and Formatting
-
-Maintain code quality with ESLint and Prettier:
-
-npm run lint
-npm run format
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/fastify-boilerplate/issues).
-
-## 📄 License
-
-This project is [MIT](https://opensource.org/licenses/MIT) licensed.
-
-## 🙏 Acknowledgements
-
--   [Fastify](https://www.fastify.io/)
--   [TypeScript](https://www.typescriptlang.org/)
--   [Jest](https://jestjs.io/)
--   [ESLint](https://eslint.org/)
--   [Prettier](https://prettier.io/)
-
----
-
-Happy coding! 🎉 If you find this boilerplate helpful, please give it a ⭐️!
-# backendInvoices
